@@ -74,7 +74,7 @@ class DefaultMobileMenuTheme {
             ],
           ),
           menuDecorationInside: BoxDecoration(
-            color: Colors.grey.shade100,
+            color: Color(0xfff7f7f7).withOpacity(0.8),
           ),
           menuPreviewDecorationOutside: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
@@ -136,7 +136,7 @@ class DefaultMobileMenuTheme {
               color: Colors.white.withOpacity(0.1),
               // width: 10.0,
             ),
-            color: const Color(0xFF30323E),
+            color: Color(0xff242424).withOpacity(0.75),
           ),
           menuPreviewDecorationOutside: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
@@ -155,7 +155,7 @@ class DefaultMobileMenuTheme {
           backgroundTintColor: (hasBlur) => hasBlur
               ? const Color(0xF3333333).withOpacity(0.3)
               : const Color(0xFF333333).withOpacity(0.5),
-          separatorColor: const Color(0xFF4C4F63),
+          separatorColor: Colors.grey.shade300,
           inactiveMenuVeilColor: (depth) =>
               const ui.Color.fromARGB(255, 35, 36, 45)
                   .withOpacity(((depth * 0.6).clamp(0.0, 0.8))),
@@ -427,7 +427,7 @@ class _MenuItem extends StatelessWidget {
       );
     } else if (element is MenuSeparator) {
       return Container(
-        height: 1,
+        height: 0.5,
         margin: const EdgeInsets.symmetric(vertical: 4),
         color: theme.separatorColor,
       );
@@ -609,7 +609,6 @@ class _MenuItemScaffold extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 10),
           child: Row(
             children: [
-              prefix,
               Expanded(
                 child: Padding(
                   padding:
@@ -617,7 +616,7 @@ class _MenuItemScaffold extends StatelessWidget {
                   child: child,
                 ),
               ),
-              if (suffix != null) suffix,
+              prefix,
             ],
           )),
     );
