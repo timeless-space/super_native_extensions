@@ -123,7 +123,7 @@ class DefaultMobileMenuTheme {
             borderRadius: BorderRadius.circular(8),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(collapsed ? 0 : 0.2),
+                color: Colors.transparent,
                 blurRadius: 15,
                 spreadRadius: 0,
                 offset: const Offset(0, 0),
@@ -133,7 +133,7 @@ class DefaultMobileMenuTheme {
           menuDecorationInside: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: Colors.white.withOpacity(0.1),
+              color: Colors.transparent,
               // width: 10.0,
             ),
             color: Color(0xff242424).withOpacity(0.75),
@@ -427,7 +427,7 @@ class _MenuItem extends StatelessWidget {
       );
     } else if (element is MenuSeparator) {
       return Container(
-        height: 0.5,
+        height: 0.1,
         margin: const EdgeInsets.symmetric(vertical: 4),
         color: theme.separatorColor,
       );
