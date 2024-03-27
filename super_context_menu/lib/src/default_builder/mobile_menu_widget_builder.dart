@@ -427,7 +427,7 @@ class _MenuItem extends StatelessWidget {
       );
     } else if (element is MenuSeparator) {
       return Container(
-        height: 0.1,
+        height: 0.2,
         margin: const EdgeInsets.symmetric(vertical: 4),
         color: theme.separatorColor,
       );
