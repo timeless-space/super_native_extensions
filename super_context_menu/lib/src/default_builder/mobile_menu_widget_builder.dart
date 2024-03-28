@@ -93,7 +93,7 @@ class DefaultMobileMenuTheme {
           backgroundTintColor: (hasBlur) => hasBlur
               ? const Color(0xF3333333).withOpacity(0.3)
               : const Color(0xFF333333).withOpacity(0.5),
-          separatorColor: Colors.grey.shade300,
+          separatorColor: Colors.black54,
           inactiveMenuVeilColor: (depth) =>
               Colors.grey.shade700.withOpacity((depth * 0.3).clamp(0.0, 0.45)),
           textStyleForItem: (info) => TextStyle(
