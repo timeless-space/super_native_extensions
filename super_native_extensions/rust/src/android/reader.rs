@@ -32,8 +32,9 @@ pub struct PlatformDataReader {
 }
 
 impl PlatformDataReader {
-    pub async fn get_format_for_file_uri(
-        _file_uri: String,
+    pub async fn get_item_format_for_uri(
+        &self,
+        _item: i64,
     ) -> NativeExtensionsResult<Option<String>> {
         Ok(None)
     }
@@ -120,7 +121,7 @@ impl PlatformDataReader {
     }
 
     thread_local! {
-        static NEXT_HANDLE: Cell<i64> = Cell::new(1);
+        static NEXT_HANDLE: Cell<i64> = const { Cell::new(1) };
         static PENDING:
             RefCell<HashMap<i64,irondash_run_loop::util::FutureCompleter<NativeExtensionsResult<Value>>>> = RefCell::new(HashMap::new());
     }

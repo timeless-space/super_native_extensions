@@ -237,7 +237,7 @@ class Formats {
   );
 
   static const gif = SimpleFileFormat(
-    uniformTypeIdentifiers: ['public.gif'],
+    uniformTypeIdentifiers: ['com.compuserve.gif'],
     windowsFormats: ['GIF'],
     mimeTypes: ['image/gif'],
   );
@@ -347,6 +347,11 @@ class Formats {
     mimeTypes: ['audio/mpeg'],
   );
 
+  static const m4a = SimpleFileFormat(
+    uniformTypeIdentifiers: ['public.mpeg-4-audio'],
+    mimeTypes: ['audio/mp4'],
+  );
+
   static const oga = SimpleFileFormat(
     uniformTypeIdentifiers: ['org.xiph.ogg.vorbis'],
     mimeTypes: ['audio/ogg'],
@@ -360,6 +365,16 @@ class Formats {
   static const wav = SimpleFileFormat(
     uniformTypeIdentifiers: ['public.wav'],
     mimeTypes: ['audio/wav'],
+  );
+
+  static const opus = SimpleFileFormat(
+    uniformTypeIdentifiers: ['org.xiph.opus'],
+    mimeTypes: ['audio/ogg'],
+  );
+
+  static const flac = SimpleFileFormat(
+    uniformTypeIdentifiers: ['org.xiph.flac'],
+    mimeTypes: ['audio/flac'],
   );
 
   //

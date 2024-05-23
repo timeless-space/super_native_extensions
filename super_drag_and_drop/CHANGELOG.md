@@ -1,3 +1,69 @@
+## 0.8.15
+
+## 0.8.14
+
+ - Bump "super_drag_and_drop" to `0.8.14`.
+
+## 0.8.13
+
+## 0.8.12
+
+## 0.8.11
+
+## 0.8.10
+
+## 0.8.9
+
+## 0.8.8
+
+## 0.8.7
+
+ - **FIX**: various exceptions when getting snapshots (#328).
+
+## 0.8.6
+
+ - **FIX**: various exceptions when getting snapshots (#327).
+
+## 0.8.5
+
+## 0.8.4
+
+## 0.8.3
+
+ - updated cargokit
+
+## 0.8.2+1
+
+## 0.8.2
+
+ - **FEAT**: improve performance with large number of items (#283).
+ - **FEAT**: use super_sliver_list in example (#281).
+ - **FEAT**: improve performance with large number of items (#274).
+
+## 0.8.1
+
+## 0.8.0
+
+## 0.8.0-dev.3
+
+ - Bump "super_drag_and_drop" to `0.8.0-dev.3`.
+
+## 0.8.0-dev.2
+
+ - Bump "super_drag_and_drop" to `0.8.0-dev.2`.
+
+## 0.8.0-dev.1
+
+## 0.7.3
+
+ - **FEAT**: improve touch device detection (#227).
+
+## 0.7.2
+
+## 0.7.1
+
+ - Bump "super_drag_and_drop" to `0.7.1`.
+
 ## 0.7.0
 
 ## 0.7.0-dev.7

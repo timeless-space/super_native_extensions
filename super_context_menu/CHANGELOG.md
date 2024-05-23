@@ -1,3 +1,63 @@
+## 0.8.15
+
+## 0.8.14
+
+ - Bump "super_context_menu" to `0.8.14`.
+
+## 0.8.13
+
+## 0.8.12
+
+## 0.8.11
+
+## 0.8.10
+
+## 0.8.9
+
+## 0.8.8
+
+## 0.8.7
+
+## 0.8.6
+
+## 0.8.5
+
+## 0.8.4
+
+## 0.8.3
+
+ - updated cargokit
+
+## 0.8.2+1
+
+## 0.8.2
+
+## 0.8.1
+
+## 0.8.0
+
+## 0.8.0-dev.3
+
+ - Bump "super_context_menu" to `0.8.0-dev.3`.
+
+## 0.8.0-dev.2
+
+ - Bump "super_context_menu" to `0.8.0-dev.2`.
+
+## 0.8.0-dev.1
+
+## 0.7.3
+
+ - **FEAT**: improve touch device detection (#227).
+
+## 0.7.2
+
+ - **FIX**: regression when context menu sometimes does not show (#220).
+
+## 0.7.1
+
+ - **FIX**: properly handle overlapping menu widgets (#217).
+
 ## 0.7.0
 
 ## 0.7.0-dev.7

@@ -1,3 +1,93 @@
+## 0.8.15
+
+ - Bump "super_hot_key" to `0.8.15`.
+
+## 0.8.14
+
+ - Bump "super_hot_key" to `0.8.14`.
+
+## 0.8.13
+
+ - Bump "super_hot_key" to `0.8.13`.
+
+## 0.8.12
+
+ - Bump "super_hot_key" to `0.8.12`.
+
+## 0.8.11
+
+ - Bump "super_hot_key" to `0.8.11`.
+
+## 0.8.10
+
+ - Bump "super_hot_key" to `0.8.10`.
+
+## 0.8.9
+
+ - Bump "super_hot_key" to `0.8.9`.
+
+## 0.8.8
+
+ - Bump "super_hot_key" to `0.8.8`.
+
+## 0.8.7
+
+## 0.8.6
+
+ - Bump "super_hot_key" to `0.8.6`.
+
+## 0.8.5
+
+ - Bump "super_hot_key" to `0.8.5`.
+
+## 0.8.4
+
+ - Bump "super_hot_key" to `0.8.4`.
+
+## 0.8.3
+
+ - updated cargokit
+
+## 0.8.2+1
+
+ - Bump "super_hot_key" to `0.8.2+1`.
+
+## 0.8.2
+
+ - Bump "super_hot_key" to `0.8.2`.
+
+## 0.8.1
+
+ - Bump "super_hot_key" to `0.8.1`.
+
+## 0.8.0
+
+ - Bump "super_hot_key" to `0.8.0`.
+
+## 0.8.0-dev.3
+
+ - Bump "super_hot_key" to `0.8.0-dev.3`.
+
+## 0.8.0-dev.2
+
+ - Bump "super_hot_key" to `0.8.0-dev.2`.
+
+## 0.8.0-dev.1
+
+ - **FIX**: hot key event handlers should not be required (#248).
+
+## 0.7.3
+
+ - Bump "super_hot_key" to `0.7.3`.
+
+## 0.7.2
+
+ - Bump "super_hot_key" to `0.7.2`.
+
+## 0.7.1
+
+ - Bump "super_hot_key" to `0.7.1`.
+
 ## 0.7.0
 
  - Bump "super_hot_key" to `0.7.0`.

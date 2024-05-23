@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:html' as html;
-import 'dart:typed_data';
-import 'dart:js_util' as js_util;
+import 'dart:js_interop';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
+import 'package:web/web.dart' as web;
 
 import '../mutex.dart';
 import '../data_provider.dart';
@@ -12,208 +11,52 @@ import '../drag.dart';
 import '../drop.dart';
 import '../reader.dart';
 import '../reader_manager.dart';
-
 import 'js_interop.dart';
-import 'clipboard_api.dart';
+import 'reader.dart';
 import 'reader_manager.dart';
 
-class WebItemDataReaderHandle implements DataReaderItemHandleImpl {
-  WebItemDataReaderHandle(this.items, {required bool canRead})
-      : file = canRead ? _getFile(items) : null,
-        entry = canRead ? _getEntry(items) : null,
-        // reading strings multiple times fails in Chrome so we cache them
-        strings = canRead ? _getStrings(items) : {};
-
-  static html.File? _getFile(List<html.DataTransferItem> items) {
-    for (final item in items) {
-      if (item.isFile) {
-        return item.getAsFile();
-      }
-    }
-    return null;
-  }
-
-  static html.Entry? _getEntry(List<html.DataTransferItem> items) {
-    for (final item in items) {
-      if (item.isFile) {
-        return item.getAsEntry();
-      }
-    }
-    return null;
-  }
-
-  static Map<String, Future<String>> _getStrings(
-      List<html.DataTransferItem> items) {
-    final res = <String, Future<String>>{};
-    for (final item in items) {
-      if (item.isString) {
-        final completer = Completer<String>();
-        item.getAsString(completer.complete);
-        res[item.format] = completer.future;
-      }
-    }
-    return res;
-  }
-
-  @override
-  Future<Object?> getDataForFormat(String format) async {
-    // meta-formats
-    if (format == 'web:file') {
-      return file;
-    }
-    if (format == 'web:entry') {
-      return entry;
-    }
-    if (strings.containsKey(format)) {
-      return strings[format];
-    }
-    for (final item in items) {
-      if (item.isFile && item.format == format) {
-        final file = this.file;
-        if (file != null) {
-          final slice = file.slice();
-          final buffer = await slice.arrayBuffer();
-          return buffer?.asUint8List();
-        }
-      }
-    }
-    return Future.value(null);
-  }
-
-  List<String> getFormatsSync() {
-    final formats = items.map((e) => e.format).toList(growable: true);
-    // meta formats for file (html.File) and entry (html.Entry)
-    if (file != null) {
-      formats.add('web:file');
-    }
-    if (entry != null) {
-      formats.add('web:entry');
-    }
-    // safari doesn't provide types during dragging, but we still need to report
-    // to use that there is potential contents.
-    return formats.isNotEmpty ? formats : ['web:unknown'];
-  }
-
-  @override
-  Future<List<String>> getFormats() async {
-    return getFormatsSync();
-  }
-
-  @override
-  Future<String?> suggestedName() async {
-    return file?.name;
-  }
-
-  final html.File? file;
-  final html.Entry? entry;
-  final Map<String, Future<String>> strings;
-  final List<html.DataTransferItem> items;
-
-  @override
-  Future<bool> canGetVirtualFile(String format) async {
-    return !format.startsWith('web:') && file != null;
-  }
-
-  @override
-  Future<VirtualFileReceiver?> createVirtualFileReceiver(
-    DataReaderItemHandle handle, {
-    required String format,
-  }) async {
-    if (await canGetVirtualFile(format)) {
-      return _VirtualFileReceiver(format, file!);
-    } else {
-      return null;
-    }
-  }
-}
-
-class _VirtualFileReceiver extends VirtualFileReceiver {
-  _VirtualFileReceiver(this.format, this.file);
-
-  @override
-  final String format;
-  final html.File file;
-
-  @override
-  (Future<String>, ReadProgress) copyVirtualFile(
-      {required String targetFolder}) {
-    throw UnimplementedError();
-  }
-
-  @override
-  (Future<VirtualFile>, ReadProgress) receiveVirtualFile() {
-    final progress = SimpleProgress();
-    progress.done();
-    return (Future.value(_VirtualFile(file)), progress);
-  }
-}
-
-class _VirtualFile extends VirtualFile {
-  _VirtualFile(this.file);
-
-  final html.File file;
-
-  ReadableStreamDefaultReader? _reader;
-
-  @override
-  void close() {
-    _reader?.cancel();
-  }
-
-  @override
-  String? get fileName => file.name;
-
-  @override
-  int? get length => file.size;
-
-  @override
-  Future<Uint8List> readNext() async {
-    if (_reader == null) {
-      final stream = file.stream();
-      _reader = stream.getReader();
-    }
-
-    final next = await _reader!.read();
-    if (next.done) {
-      return Uint8List(0);
-    } else {
-      return next.value as Uint8List;
-    }
-  }
-}
-
-List<DropItem> _translateTransferItems(
-  html.DataTransferItemList? itemList, {
+List<DropItem> _translateDataTransfer(
+  web.DataTransfer dataTransfer, {
   required bool allowReader,
-  required bool hasFiles,
 }) {
-  final res = <WebItemDataReaderHandle>[];
-  var items = <html.DataTransferItem>[];
+  return translateDataTransfer(dataTransfer, allowReader: allowReader)
+      .mapIndexed((i, e) => DropItem(
+            itemId: i,
+            formats: e.$1,
+            readerItem: allowReader
+                ? DataReaderItem(handle: e.$2 as DataReaderItemHandle)
+                : null,
+          ))
+      .toList(growable: false);
+}
 
-  for (int i = 0; i < (itemList?.length ?? 0); ++i) {
-    final item = itemList![i];
+Iterable<(List<String> formats, $DataReaderItemHandle? readerHandle)>
+    translateDataTransfer(
+  web.DataTransfer dataTransfer, {
+  required bool allowReader,
+}) {
+  final itemList = dataTransfer.items;
+  final hasFiles = dataTransfer.types.toDart.contains("Files");
+
+  final res = <DataTransferItemHandle>[];
+  var items = <web.DataTransferItem>[];
+
+  for (int i = 0; i < itemList.length; ++i) {
+    final item = itemList[i];
     if ((item.isString && items.any((element) => element.type == item.type)) ||
         (item.isFile && items.any((element) => element.isFile))) {
-      res.add(WebItemDataReaderHandle(items, canRead: allowReader));
-      items = <html.DataTransferItem>[];
+      res.add(DataTransferItemHandle(items, canRead: allowReader));
+      items = <web.DataTransferItem>[];
     }
     items.add(item);
   }
   if (items.isNotEmpty) {
-    res.add(WebItemDataReaderHandle(items, canRead: allowReader));
+    res.add(DataTransferItemHandle(items, canRead: allowReader));
   }
   if (res.isEmpty && hasFiles) {
-    res.add(WebItemDataReaderHandle([], canRead: false));
+    res.add(DataTransferItemHandle([], canRead: false));
   }
-  return res
-      .mapIndexed((i, e) => DropItem(
-            itemId: i,
-            formats: e.getFormatsSync(),
-            readerItem: allowReader
-                ? DataReaderItem(handle: e as DataReaderItemHandle)
-                : null,
-          ))
-      .toList(growable: false);
+  return res.map((e) => (e.getFormatsSync(), allowReader ? e : null));
 }
 
 List<DropOperation> _translateAllowedEffect(String? effects) {
@@ -266,24 +109,23 @@ class DropContextImpl extends DropContext {
   int? _sessionId;
   var lastOperation = DropOperation.none;
 
-  void _onDragEnter(html.DataTransfer transfer, html.MouseEvent event) {
+  void _onDragEnter(web.DataTransfer transfer, web.MouseEvent event) {
     _sessionId = _nextSessionId++;
     _onDragOver(transfer, event);
   }
 
-  void _onDragOver(html.DataTransfer transfer, html.MouseEvent event) async {
+  void _onDragOver(web.DataTransfer transfer, web.MouseEvent event) async {
     if (_sessionId == null) {
       return;
     }
-    final bool hasFiles = transfer.types?.contains("Files") ?? false;
+
     final dropEvent = DropEvent(
       sessionId: _sessionId!,
-      locationInView: Offset(event.page.x.toDouble(), event.page.y.toDouble()),
+      locationInView: Offset(event.pageX.toDouble(), event.pageY.toDouble()),
       allowedOperations: _translateAllowedEffect(transfer.effectAllowed),
-      items: _translateTransferItems(
-        transfer.items,
+      items: _translateDataTransfer(
+        transfer,
         allowReader: false,
-        hasFiles: hasFiles,
       ),
     );
     final currentSessionId = _sessionId;
@@ -310,16 +152,14 @@ class DropContextImpl extends DropContext {
     }
   }
 
-  void _onDrop(html.DataTransfer transfer, html.MouseEvent event) async {
-    final bool hasFiles = transfer.types?.contains("Files") ?? false;
+  void _onDrop(web.DataTransfer transfer, web.MouseEvent event) async {
     final dropEvent = DropEvent(
       sessionId: _sessionId!,
-      locationInView: Offset(event.page.x.toDouble(), event.page.y.toDouble()),
+      locationInView: Offset(event.pageX.toDouble(), event.pageY.toDouble()),
       allowedOperations: _translateAllowedEffect(transfer.effectAllowed),
-      items: _translateTransferItems(
-        transfer.items,
+      items: _translateDataTransfer(
+        transfer,
         allowReader: true,
-        hasFiles: hasFiles,
       ),
       acceptedOperation: lastOperation,
     );
@@ -333,42 +173,57 @@ class DropContextImpl extends DropContext {
   /// from other elements because when using platform view the drag events
   /// are not propagated to parent elements.
   /// https://github.com/superlistapp/super_native_extensions/issues/98
-  html.EventTarget? _lastDragEnter;
+  web.EventTarget? _lastDragEnter;
 
   @override
   Future<void> initialize() async {
-    html.document.addEventListener('dragenter', (event) {
-      final inProgress = _lastDragEnter != null;
-      _lastDragEnter = event.target;
-      event.preventDefault();
-      if (!inProgress) {
-        final dataTransfer =
-            js_util.getProperty(event, 'dataTransfer') as html.DataTransfer;
-        _onDragEnter(dataTransfer, event as html.MouseEvent);
-      }
-    });
-    html.document.addEventListener('dragover', (event) {
-      event.preventDefault();
-      final dataTransfer =
-          js_util.getProperty(event, 'dataTransfer') as html.DataTransfer;
-      _onDragOver(dataTransfer, event as html.MouseEvent);
-    });
-    html.document.addEventListener('drop', (event) async {
-      event.preventDefault();
-      _lastDragEnter = null;
-      final dataTransfer =
-          js_util.getProperty(event, 'dataTransfer') as html.DataTransfer;
-      _onDrop(dataTransfer, event as html.MouseEvent);
-    });
-    html.document.addEventListener('dragleave', (event) {
-      if (_lastDragEnter != event.target) {
-        return;
-      } else {
+    web.document.addEventListener(
+      'dragenter',
+      (web.DragEvent event) {
+        final inProgress = _lastDragEnter != null;
+        _lastDragEnter = event.target;
+        event.preventDefault();
+        if (!inProgress) {
+          final dataTransfer = event.dataTransfer;
+          if (dataTransfer != null) {
+            _onDragEnter(dataTransfer, event as web.MouseEvent);
+          }
+        }
+      }.toJS,
+    );
+    web.document.addEventListener(
+      'dragover',
+      (web.DragEvent event) {
+        event.preventDefault();
+        final dataTransfer = event.dataTransfer;
+        if (dataTransfer != null) {
+          _onDragOver(dataTransfer, event as web.MouseEvent);
+        }
+      }.toJS,
+    );
+    web.document.addEventListener(
+      'drop',
+      (web.DragEvent event) {
+        event.preventDefault();
         _lastDragEnter = null;
-      }
-      event.preventDefault();
-      _onDragLeave();
-    });
+        final dataTransfer = event.dataTransfer;
+        if (dataTransfer != null) {
+          _onDrop(dataTransfer, event as web.MouseEvent);
+        }
+      }.toJS,
+    );
+    web.document.addEventListener(
+      'dragleave',
+      (web.DragEvent event) {
+        if (_lastDragEnter != event.target) {
+          return;
+        } else {
+          _lastDragEnter = null;
+        }
+        event.preventDefault();
+        _onDragLeave();
+      }.toJS,
+    );
   }
 
   @override
@@ -399,7 +254,7 @@ class DropContextImpl extends DropContext {
               formats: itemFormats(item.dataProvider),
               localData: item.localData,
               readerItem: DataReaderItem(
-                handle: DataProviderReaderItem(item.dataProvider)
+                handle: DataProviderItemHandle(item.dataProvider)
                     as DataReaderItemHandle,
               ),
             ),

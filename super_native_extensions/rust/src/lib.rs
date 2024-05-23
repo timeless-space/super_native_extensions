@@ -3,7 +3,10 @@
 #![allow(clippy::single_match)]
 #![allow(clippy::type_complexity)]
 #![allow(unknown_lints)]
-#![allow(clippy::arc_with_non_send_sync)] // https://github.com/rust-lang/rust-clippy/issues/11076
+// https://github.com/rust-lang/rust-clippy/issues/11076
+#![allow(clippy::arc_with_non_send_sync)]
+// TODO(knopp): Fine grained way to prevent dead code warnings in code that is not used on all platforms.
+#![allow(dead_code)]
 
 use std::ffi::c_void;
 
@@ -127,6 +130,7 @@ pub extern "C" fn super_native_extensions_init() {
 #[cfg(target_os = "android")]
 mod android {
 
+    use irondash_run_loop::RunLoop;
     use once_cell::sync::OnceCell;
 
     use crate::init;
@@ -150,6 +154,12 @@ mod android {
     ) {
         use ::log::Level;
         use android_logger::Config;
+
+        // This is to ensure that engine context is not used for sending things
+        // to main thread. EngineContext main thread sender does not work properly
+        // with RunLoop::poll_once, which is used during clipboard access.
+        // Without this clipboard access may deadlock.
+        RunLoop::set_main_thread();
 
         android_logger::init_once(
             Config::default()

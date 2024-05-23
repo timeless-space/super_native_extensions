@@ -1,3 +1,69 @@
+## 0.8.15
+
+## 0.8.14
+
+ - Bump "super_clipboard" to `0.8.14`.
+
+## 0.8.13
+
+## 0.8.12
+
+## 0.8.11
+
+## 0.8.10
+
+## 0.8.9
+
+## 0.8.8
+
+ - **FEAT**: add flac and ogg format definitions (#331).
+
+## 0.8.7
+
+## 0.8.6
+
+## 0.8.5
+
+ - **FEAT**: add m4a format definition (#306).
+
+## 0.8.4
+
+## 0.8.3
+
+ - updated cargokit
+
+## 0.8.2+1
+
+## 0.8.2
+
+ - **FIX**: correct GIF uniform type identifier (#276).
+ - **FEAT**: improve performance with large number of items (#283).
+
+## 0.8.1
+
+## 0.8.0
+
+## 0.8.0-dev.3
+
+ - **FEAT**: implement copy and cut events (#253).
+
+## 0.8.0-dev.2
+
+ - Bump "super_clipboard" to `0.8.0-dev.2`.
+
+## 0.8.0-dev.1
+
+ - **FEAT**: preventDefault for paste event (#249).
+ - **FEAT**: implement paste event on web (#246).
+
+## 0.7.3
+
+## 0.7.2
+
+## 0.7.1
+
+ - Bump "super_clipboard" to `0.7.1`.
+
 ## 0.7.0
 
 ## 0.7.0-dev.7

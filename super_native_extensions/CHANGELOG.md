@@ -1,3 +1,91 @@
+## 0.8.15
+
+ - **FIX**: remove obsolete code (#364).
+
+## 0.8.14
+
+ - Bump "super_native_extensions" to `0.8.14`.
+
+## 0.8.13
+
+## 0.8.12
+
+ - Bump "super_native_extensions" to `0.8.12`.
+
+## 0.8.11
+
+ - **FIX**: ignore scroll event in web drag driver.
+ - **FIX**: ignore unknown pointer device kind (#344).
+
+## 0.8.10
+
+## 0.8.9
+
+ - **FIX**: delay menu fade-out on iOS (#333).
+
+## 0.8.8
+
+ - **FIX**: regression with custom snapshot (#330).
+
+## 0.8.7
+
+## 0.8.6
+
+ - **FIX**: various exceptions when getting snapshots (#327).
+ - **FIX**: fit menu position to bounds after inflating (#322).
+ - **FIX**: assertion when taking snapshot of material widget (#320).
+
+## 0.8.5
+
+## 0.8.4
+
+## 0.8.3
+
+## 0.8.2+1
+
+ - **FIX**: remove leftover logging (#284).
+
+## 0.8.2
+
+ - **FIX**: [android] possible deadlock when reading from clipboard (#282).
+ - **FEAT**: improve performance with large number of items (#283).
+ - **FEAT**: improve performance with large number of items (#274).
+
+## 0.8.1
+
+ - **FIX**: [ios] store user interaction properly (#272).
+ - **FIX**: no security scope NSURL access on macos (#271).
+ - **FEAT**: [windows] cache file descriptors in reader (#266).
+
+## 0.8.0
+
+ - **FIX**: access NSURL within security scope (#264).
+
+## 0.8.0-dev.3
+
+ - **FEAT**: implement copy and cut events (#253).
+
+## 0.8.0-dev.2
+
+ - Bump "super_native_extensions" to `0.8.0-dev.2`.
+
+## 0.8.0-dev.1
+
+ - **FEAT**: preventDefault for paste event (#249).
+ - **FEAT**: implement paste event on web (#246).
+ - **FEAT**: migrate to objc2 (#239).
+
+## 0.7.3
+
+ - **FIX**: let zone handle menu callback errors (#228).
+ - **FEAT**: improve touch device detection (#227).
+
+## 0.7.2
+
+ - Bump "super_native_extensions" to `0.7.2`.
+
+## 0.7.1
+
 ## 0.7.0
 
 ## 0.7.0-dev.7
